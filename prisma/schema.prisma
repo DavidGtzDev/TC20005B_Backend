@@ -1,0 +1,100 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Empleado {
+  id_empleado       Int       @id @default(autoincrement())
+  nombre_empleado   String
+  correo_empleado   String    @unique
+  telefono_empleado String    @unique
+  Creador           Creador[]
+  Editor            Editor[]
+  Edicion           Edicion[]
+}
+
+model Empresa {
+  id_empresa       Int       @id @default(autoincrement())
+  nombre_empresa   String
+  correo_empresa   String    @unique
+  telefono_empresa String    @unique
+  Cliente          Cliente[]
+  Modelo           Modelo[]
+}
+
+model Cliente {
+  id_cliente       Int        @id @default(autoincrement())
+  nombre_cliente   String
+  correo_cliente   String     @unique
+  telefono_cliente String     @unique
+  id_empresa       Int
+  empresa          Empresa    @relation(fields: [id_empresa], references: [id_empresa])
+  Modelo           Modelo[]
+  Peticion         Peticion[]
+}
+
+model Creador {
+  id_creador Int      @id
+  empleado   Empleado @relation(fields: [id_creador], references: [id_empleado])
+  Modelo     Modelo[]
+}
+
+model Editor {
+  id_editor         Int                 @id
+  empleado          Empleado            @relation(fields: [id_editor], references: [id_empleado])
+  EditoresDeModelos EditoresDeModelos[]
+}
+
+model Modelo {
+  id_modelo         Int                 @id @default(autoincrement())
+  fecha_de_creacion DateTime
+  archivo           Bytes
+  id_creador        Int
+  id_empresa        Int
+  id_cliente        Int
+  creador           Creador             @relation(fields: [id_creador], references: [id_creador])
+  empresa           Empresa             @relation(fields: [id_empresa], references: [id_empresa])
+  cliente           Cliente             @relation(fields: [id_cliente], references: [id_cliente])
+  Edicion           Edicion[]
+  EditoresDeModelos EditoresDeModelos[]
+  Peticion          Peticion[]
+}
+
+model Edicion {
+  id_modelo             Int
+  id_empleado           Int
+  fecha_de_modificacion DateTime
+  archivo               Bytes
+  modelo                Modelo   @relation(fields: [id_modelo], references: [id_modelo])
+  empleado              Empleado @relation(fields: [id_empleado], references: [id_empleado])
+
+  @@id(name: "id_edicion", [id_modelo, id_empleado, fecha_de_modificacion])
+}
+
+model EditoresDeModelos {
+  id_editor Int
+  id_modelo Int
+  modelo    Modelo @relation(fields: [id_modelo], references: [id_modelo])
+  editor    Editor @relation(fields: [id_editor], references: [id_editor])
+
+  @@id(name: "id_editores_de_modelos", [id_editor, id_modelo])
+}
+
+model Peticion {
+  id_cliente       Int
+  id_modelo        Int
+  fecha_de_emision DateTime
+  contenido        String
+  estatus          Boolean
+  cliente          Cliente  @relation(fields: [id_cliente], references: [id_cliente])
+  modelo           Modelo   @relation(fields: [id_modelo], references: [id_modelo])
+
+  @@id(name: "id_peticion", [id_cliente, id_modelo, fecha_de_emision])
+}
