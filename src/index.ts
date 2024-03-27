@@ -108,6 +108,7 @@ app.get("/modelos", (req: Request, res: Response) => {
 
 app.post("/modelos/:id/archivo", upload.single("file"), (req, res) => {
   //res.send(req.params)
+  
   QueryHandler.agregarArchivoAModelo(req, prisma)
     .then(async () => {
       await prisma.$disconnect();

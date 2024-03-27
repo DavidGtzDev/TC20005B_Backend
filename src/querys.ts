@@ -78,8 +78,9 @@ export module QueryHandler {
     req: Request,
     prisma: PrismaClient
   ) {
+    //Esta diciendo que el archivo es undefined
     const file = req.file;
-
+    
     if (!file) {
       throw new Error("No hay archivo papu :v");
     }
@@ -87,6 +88,8 @@ export module QueryHandler {
     if (!req.params["id"]) {
       throw new Error("No pusiste id en la direccion papu :v");
     }
+
+    
 
     await prisma.modelo.update({
       where: {
