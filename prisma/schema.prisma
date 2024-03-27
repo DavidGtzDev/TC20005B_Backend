@@ -11,57 +11,55 @@ datasource db {
 }
 
 model Empleado {
-  id_empleado       Int       @id @default(autoincrement())
   nombre_empleado   String
-  correo_empleado   String    @unique
+  correo_empleado   String    @id @unique
   telefono_empleado String    @unique
+  password_empleado String
   Creador           Creador[]
   Editor            Editor[]
   Edicion           Edicion[]
 }
 
 model Empresa {
-  id_empresa       Int       @id @default(autoincrement())
   nombre_empresa   String
-  correo_empresa   String    @unique
+  correo_empresa   String    @id @unique
   telefono_empresa String    @unique
   Cliente          Cliente[]
   Modelo           Modelo[]
 }
 
 model Cliente {
-  id_cliente       Int        @id @default(autoincrement())
   nombre_cliente   String
-  correo_cliente   String     @unique
+  correo_cliente   String     @id @unique
   telefono_cliente String     @unique
-  id_empresa       Int
-  empresa          Empresa    @relation(fields: [id_empresa], references: [id_empresa])
+  correo_empresa   String
+  empresa          Empresa    @relation(fields: [correo_empresa], references: [correo_empresa])
   Modelo           Modelo[]
   Peticion         Peticion[]
 }
 
 model Creador {
-  id_creador Int      @id
-  empleado   Empleado @relation(fields: [id_creador], references: [id_empleado])
-  Modelo     Modelo[]
+  correo_creador String   @id @unique
+  empleado       Empleado @relation(fields: [correo_creador], references: [correo_empleado])
+  Modelo         Modelo[]
 }
 
 model Editor {
-  id_editor         Int                 @id
-  empleado          Empleado            @relation(fields: [id_editor], references: [id_empleado])
+  correo_editor     String              @id @unique
+  empleado          Empleado            @relation(fields: [correo_editor], references: [correo_empleado])
   EditoresDeModelos EditoresDeModelos[]
 }
 
 model Modelo {
   id_modelo         Int                 @id @default(autoincrement())
-  fecha_de_creacion DateTime
-  archivo           Bytes
-  id_creador        Int
-  id_empresa        Int
-  id_cliente        Int
-  creador           Creador             @relation(fields: [id_creador], references: [id_creador])
-  empresa           Empresa             @relation(fields: [id_empresa], references: [id_empresa])
-  cliente           Cliente             @relation(fields: [id_cliente], references: [id_cliente])
+  fecha_de_creacion DateTime            @default(now())
+  archivo           Bytes?
+  correo_creador    String
+  correo_empresa    String
+  correo_cliente    String
+  creador           Creador             @relation(fields: [correo_creador], references: [correo_creador])
+  empresa           Empresa             @relation(fields: [correo_empresa], references: [correo_empresa])
+  cliente           Cliente             @relation(fields: [correo_cliente], references: [correo_cliente])
   Edicion           Edicion[]
   EditoresDeModelos EditoresDeModelos[]
   Peticion          Peticion[]
@@ -69,32 +67,32 @@ model Modelo {
 
 model Edicion {
   id_modelo             Int
-  id_empleado           Int
-  fecha_de_modificacion DateTime
+  correo_empleado       String
+  fecha_de_modificacion DateTime @default(now())
   archivo               Bytes
   modelo                Modelo   @relation(fields: [id_modelo], references: [id_modelo])
-  empleado              Empleado @relation(fields: [id_empleado], references: [id_empleado])
+  empleado              Empleado @relation(fields: [correo_empleado], references: [correo_empleado])
 
-  @@id(name: "id_edicion", [id_modelo, id_empleado, fecha_de_modificacion])
+  @@id(name: "id_edicion", [id_modelo, correo_empleado, fecha_de_modificacion])
 }
 
 model EditoresDeModelos {
-  id_editor Int
-  id_modelo Int
-  modelo    Modelo @relation(fields: [id_modelo], references: [id_modelo])
-  editor    Editor @relation(fields: [id_editor], references: [id_editor])
+  correo_editor String
+  id_modelo     Int
+  modelo        Modelo @relation(fields: [id_modelo], references: [id_modelo])
+  editor        Editor @relation(fields: [correo_editor], references: [correo_editor])
 
-  @@id(name: "id_editores_de_modelos", [id_editor, id_modelo])
+  @@id(name: "id_editores_de_modelos", [correo_editor, id_modelo])
 }
 
 model Peticion {
-  id_cliente       Int
+  correo_cliente   String
   id_modelo        Int
-  fecha_de_emision DateTime
+  fecha_de_emision DateTime @default(now())
   contenido        String
   estatus          Boolean
-  cliente          Cliente  @relation(fields: [id_cliente], references: [id_cliente])
+  cliente          Cliente  @relation(fields: [correo_cliente], references: [correo_cliente])
   modelo           Modelo   @relation(fields: [id_modelo], references: [id_modelo])
 
-  @@id(name: "id_peticion", [id_cliente, id_modelo, fecha_de_emision])
+  @@id(name: "id_peticion", [correo_cliente, id_modelo, fecha_de_emision])
 }
