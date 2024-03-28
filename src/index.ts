@@ -6,7 +6,7 @@ import multer from "multer";
 const prisma = new PrismaClient();
 const app = express();
 const port = process.env.PORT || 3000;
-const upload = multer({ storage: multer.memoryStorage() });
+const upload = multer({});
 
 app.use(express.json());
 
@@ -106,9 +106,7 @@ app.get("/modelos", (req: Request, res: Response) => {
     });
 });
 
-app.post("/modelos/:id/archivo", upload.single("file"), (req, res) => {
-  //res.send(req.params)
-  
+app.post("/modelos/:id/archivo", upload.single('file'), (req, res) => {
   QueryHandler.agregarArchivoAModelo(req, prisma)
     .then(async () => {
       await prisma.$disconnect();

@@ -90,7 +90,6 @@ export module QueryHandler {
     }
 
     
-
     await prisma.modelo.update({
       where: {
         id_modelo: Number(req.params["id"]) || 0,
