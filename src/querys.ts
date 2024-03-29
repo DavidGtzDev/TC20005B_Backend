@@ -4,9 +4,18 @@ import { Request } from "express";
 export module QueryHandler {
   export async function darDeAltaEmpleado(req: Request, prisma: PrismaClient) {
     let json = req.body;
-    const empleado = await prisma.empleado.create({
-      data: json,
-    });
+
+    if (Array.isArray(json)) {
+        for (const data of json) {
+            const empleado = await prisma.empleado.create({
+                data: data,
+            });
+        }
+    } else {
+        const empleado = await prisma.empleado.create({
+            data: json,
+        });
+    }
   }
 
   export async function verEmpleados(prisma: PrismaClient) {
@@ -16,9 +25,18 @@ export module QueryHandler {
 
   export async function darDeAltaEmpresa(req: Request, prisma: PrismaClient) {
     let json = req.body;
-    const empresa = await prisma.empresa.create({
-      data: json,
-    });
+
+    if (Array.isArray(json)) {
+        for (const data of json) {
+            const empresa = await prisma.empresa.create({
+                data: data,
+            });
+        }
+    } else {
+        const empresa = await prisma.empresa.create({
+            data: json,
+        });
+    }
   }
 
   export async function verEmpresas(prisma: PrismaClient) {
@@ -28,9 +46,18 @@ export module QueryHandler {
 
   export async function darDeAltaCliente(req: Request, prisma: PrismaClient) {
     let json = req.body;
-    const cliente = await prisma.cliente.create({
-      data: json,
-    });
+
+    if (Array.isArray(json)) {
+        for (const data of json) {
+            const cliente = await prisma.cliente.create({
+                data: data,
+            });
+        }
+    } else {
+        const cliente = await prisma.cliente.create({
+            data: json,
+        });
+    }
   }
 
   export async function verClientes(prisma: PrismaClient) {
@@ -70,7 +97,16 @@ export module QueryHandler {
   }
 
   export async function verModelos(prisma: PrismaClient) {
-    const modelos = await prisma.modelo.findMany();
+    const modelos = await prisma.modelo.findMany({
+      select:{
+        id_modelo: true,
+        fecha_de_creacion: true,
+        correo_creador: true,
+        correo_empresa: true,
+        correo_cliente: true,
+        archivo: false
+      }
+    });
     return modelos;
   }
 
