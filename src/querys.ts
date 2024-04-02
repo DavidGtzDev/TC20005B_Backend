@@ -52,7 +52,7 @@ export module QueryHandler {
             const cliente = await prisma.cliente.create({
                 data: data,
             });
-        }
+        } 
     } else {
         const cliente = await prisma.cliente.create({
             data: json,
@@ -115,7 +115,7 @@ export module QueryHandler {
     prisma: PrismaClient
   ) {
     //Esta diciendo que el archivo es undefined
-    const file = req.file;
+    const file = req.file?.path;
     
     if (!file) {
       throw new Error("No hay archivo papu :v");
@@ -128,11 +128,26 @@ export module QueryHandler {
     
     await prisma.modelo.update({
       where: {
-        id_modelo: Number(req.params["id"]) || 0,
+        id_modelo: Number(req.params["id"]) || 0,   
       },
       data: {
-        archivo: Buffer.from(file.buffer),
+        archivo: file,
       },
     });
+  }
+
+
+  export async function obtenerArchivoModelo( req: Request, prisma: PrismaClient){
+    if (!req.params["id"]) {
+      throw new Error("No pusiste id en la direccion papu :v");
+    }
+
+    const model = await prisma.modelo.findUnique({
+      where: {
+        id_modelo: Number(req.params["id"]) || 0, 
+      },
+    })
+
+    return model?.archivo
   }
 }

@@ -6,7 +6,7 @@ import multer from "multer";
 const prisma = new PrismaClient();
 const app = express();
 const port = process.env.PORT || 3000;
-const upload = multer({});
+const upload = multer({ dest: "src/uploads/" });
 
 app.use(express.json());
 
@@ -106,11 +106,32 @@ app.get("/modelos", (req: Request, res: Response) => {
     });
 });
 
-app.post("/modelos/:id/archivo", upload.single('file'), (req, res) => {
+app.post("/modelos/:id/archivo", upload.single("file"), (req, res) => {
+  //console.log(req.file?.path)
   QueryHandler.agregarArchivoAModelo(req, prisma)
     .then(async () => {
       await prisma.$disconnect();
       res.send("WIJIU");
+    })
+    .catch(async (e) => {
+      await prisma.$disconnect();
+      res.send(e);
+    });
+});
+
+//app.use('/static', express.static('public'))
+
+app.get("/modelos/:id/archivo", (req, res) => {
+  QueryHandler.obtenerArchivoModelo(req, prisma)
+    .then(async (path) => {
+      await prisma.$disconnect();
+      if (path) {
+        let cleanPath = path.replace(/src\\/g, '');
+        const file = `${__dirname}` + '\/' + cleanPath;
+        res.download(file);
+      }else{
+        res.send("No hay archivo papu :v")
+      }
     })
     .catch(async (e) => {
       await prisma.$disconnect();

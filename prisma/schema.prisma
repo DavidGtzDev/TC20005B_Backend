@@ -53,7 +53,7 @@ model Editor {
 model Modelo {
   id_modelo         Int                 @id @default(autoincrement())
   fecha_de_creacion DateTime            @default(now())
-  archivo           Bytes?
+  archivo           String?
   correo_creador    String
   correo_empresa    String
   correo_cliente    String
