@@ -126,11 +126,11 @@ app.get("/modelos/:id/archivo", (req, res) => {
     .then(async (path) => {
       await prisma.$disconnect();
       if (path) {
-        let cleanPath = path.replace(/src\\/g, '');
-        const file = `${__dirname}` + '\/' + cleanPath;
+        let cleanPath = path.replace(/src\\/g, "");
+        const file = `${__dirname}` + "/" + cleanPath;
         res.download(file);
-      }else{
-        res.send("No hay archivo papu :v")
+      } else {
+        res.send("No hay archivo papu :v");
       }
     })
     .catch(async (e) => {
@@ -138,6 +138,32 @@ app.get("/modelos/:id/archivo", (req, res) => {
       res.send(e);
     });
 });
+
+app.post("/editores", (req, res) => {
+  QueryHandler.agregarEditores(req, prisma)
+    .then(async () => {
+      await prisma.$disconnect();
+      res.send("WIJIU");
+    })
+    .catch(async (e) => {
+      await prisma.$disconnect();
+      res.send(e);
+    });
+});
+
+app.get("/editores/:id", (req, res) => {
+  
+  QueryHandler.obtenerEditoresDeUnArchivo(req, prisma)
+    .then(async (editores) => {
+      await prisma.$disconnect();
+      res.send(editores);
+    })
+    .catch(async (e) => {
+      await prisma.$disconnect();
+      res.send(e);
+    });
+});
+
 
 app.listen(port, () => {
   console.log(`Server running at http://localhost:${port}`);

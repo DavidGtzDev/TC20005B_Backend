@@ -150,4 +150,47 @@ export module QueryHandler {
 
     return model?.archivo
   }
+
+  export async function agregarEditores( req: Request, prisma: PrismaClient){
+    let json = req.body;
+
+    if (!json || !json["correo_editor"] || !json["id_modelo"]) {
+      throw new Error("Missing 'correo_creador' field in JSON");
+    }
+
+    const editor = json["correo_editor"];
+    const modelo = json["id_modelo"];
+
+    const nuevoEditor = await prisma.editor.create({
+      data: {
+        correo_editor: editor,
+      },
+    });
+
+    const nuevaRelacionEditorModelo = await prisma.editoresDeModelos.create({
+      data: {
+        correo_editor: editor || "",
+        id_modelo: parseInt(modelo) || 0
+      },
+    });
+
+
+  }
+
+
+  export async function obtenerEditoresDeUnArchivo(req: Request, prisma: PrismaClient){
+    if (!req.params["id"]) {
+      throw new Error("No pusiste id en la direccion papu :v");
+    }
+    
+    const editores = await prisma.editoresDeModelos.findMany({
+      where: {
+        id_modelo: parseInt(req.params["id"]) || 0
+      },
+    })
+
+
+    return editores
+
+  }
 }
