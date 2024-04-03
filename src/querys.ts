@@ -6,15 +6,15 @@ export module QueryHandler {
     let json = req.body;
 
     if (Array.isArray(json)) {
-        for (const data of json) {
-            const empleado = await prisma.empleado.create({
-                data: data,
-            });
-        }
-    } else {
+      for (const data of json) {
         const empleado = await prisma.empleado.create({
-            data: json,
+          data: data,
         });
+      }
+    } else {
+      const empleado = await prisma.empleado.create({
+        data: json,
+      });
     }
   }
 
@@ -27,15 +27,15 @@ export module QueryHandler {
     let json = req.body;
 
     if (Array.isArray(json)) {
-        for (const data of json) {
-            const empresa = await prisma.empresa.create({
-                data: data,
-            });
-        }
-    } else {
+      for (const data of json) {
         const empresa = await prisma.empresa.create({
-            data: json,
+          data: data,
         });
+      }
+    } else {
+      const empresa = await prisma.empresa.create({
+        data: json,
+      });
     }
   }
 
@@ -48,15 +48,15 @@ export module QueryHandler {
     let json = req.body;
 
     if (Array.isArray(json)) {
-        for (const data of json) {
-            const cliente = await prisma.cliente.create({
-                data: data,
-            });
-        } 
-    } else {
+      for (const data of json) {
         const cliente = await prisma.cliente.create({
-            data: json,
+          data: data,
         });
+      }
+    } else {
+      const cliente = await prisma.cliente.create({
+        data: json,
+      });
     }
   }
 
@@ -98,14 +98,14 @@ export module QueryHandler {
 
   export async function verModelos(prisma: PrismaClient) {
     const modelos = await prisma.modelo.findMany({
-      select:{
+      select: {
         id_modelo: true,
         fecha_de_creacion: true,
         correo_creador: true,
         correo_empresa: true,
         correo_cliente: true,
-        archivo: false
-      }
+        archivo: false,
+      },
     });
     return modelos;
   }
@@ -116,7 +116,7 @@ export module QueryHandler {
   ) {
     //Esta diciendo que el archivo es undefined
     const file = req.file?.path;
-    
+
     if (!file) {
       throw new Error("No hay archivo papu :v");
     }
@@ -125,10 +125,9 @@ export module QueryHandler {
       throw new Error("No pusiste id en la direccion papu :v");
     }
 
-    
     await prisma.modelo.update({
       where: {
-        id_modelo: Number(req.params["id"]) || 0,   
+        id_modelo: Number(req.params["id"]) || 0,
       },
       data: {
         archivo: file,
@@ -136,22 +135,24 @@ export module QueryHandler {
     });
   }
 
-
-  export async function obtenerArchivoModelo( req: Request, prisma: PrismaClient){
+  export async function obtenerArchivoModelo(
+    req: Request,
+    prisma: PrismaClient
+  ) {
     if (!req.params["id"]) {
       throw new Error("No pusiste id en la direccion papu :v");
     }
 
     const model = await prisma.modelo.findUnique({
       where: {
-        id_modelo: Number(req.params["id"]) || 0, 
+        id_modelo: Number(req.params["id"]) || 0,
       },
-    })
+    });
 
-    return model?.archivo
+    return model?.archivo;
   }
 
-  export async function agregarEditores( req: Request, prisma: PrismaClient){
+  export async function agregarEditores(req: Request, prisma: PrismaClient) {
     let json = req.body;
 
     if (!json || !json["correo_editor"] || !json["id_modelo"]) {
@@ -170,27 +171,62 @@ export module QueryHandler {
     const nuevaRelacionEditorModelo = await prisma.editoresDeModelos.create({
       data: {
         correo_editor: editor || "",
-        id_modelo: parseInt(modelo) || 0
+        id_modelo: parseInt(modelo) || 0,
       },
     });
-
-
   }
 
-
-  export async function obtenerEditoresDeUnArchivo(req: Request, prisma: PrismaClient){
+  export async function obtenerEditoresDeUnArchivo(
+    req: Request,
+    prisma: PrismaClient
+  ) {
     if (!req.params["id"]) {
       throw new Error("No pusiste id en la direccion papu :v");
     }
-    
+
     const editores = await prisma.editoresDeModelos.findMany({
       where: {
-        id_modelo: parseInt(req.params["id"]) || 0
+        id_modelo: parseInt(req.params["id"]) || 0,
       },
-    })
+    });
 
+    return editores;
+  }
 
-    return editores
+  export async function guardarNuevaVersionDelModelo(req: Request, prisma: PrismaClient){
+    const file = req.file?.path;
 
+    if (!file) {
+      throw new Error("No hay archivo papu :v");
+    }
+
+    let json = req.body;
+
+    if (!json || !json["editor"] || !json["id_modelo"]) {
+      throw new Error("Missing 'correo_creador' field in JSON");
+    }
+
+    const modelo = await prisma.modelo.findUnique({
+      where: {
+        id_modelo: parseInt(json["id_modelo"]) || 0,
+      },
+    });
+
+    const nuevaEdicion = await prisma.edicion.create({
+      data: {
+        id_modelo:  modelo?.id_modelo || 0,
+        correo_empleado:  json["editor"] || "",
+        archivo: file
+      },
+    });
+
+    /**
+     const nuevaEdicion = await prisma.edicion.create({
+      data: {
+        
+      },
+    });
+     */
+    
   }
 }

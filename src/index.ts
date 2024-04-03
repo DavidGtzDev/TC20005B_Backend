@@ -152,7 +152,6 @@ app.post("/editores", (req, res) => {
 });
 
 app.get("/editores/:id", (req, res) => {
-  
   QueryHandler.obtenerEditoresDeUnArchivo(req, prisma)
     .then(async (editores) => {
       await prisma.$disconnect();
@@ -162,7 +161,43 @@ app.get("/editores/:id", (req, res) => {
       await prisma.$disconnect();
       res.send(e);
     });
-});
+});   
+
+app.post("/guardar", upload.single("file"), (req, res) => {   
+  QueryHandler.guardarNuevaVersionDelModelo(req, prisma)
+    .then(async() => {
+      await prisma.$disconnect();
+      res.send("WIJIU")
+    })
+    .catch(async (e) => {
+      await prisma.$disconnect();
+      res.send(e);
+    });
+})
+
+app.get("/peticion", (req, res) => {
+
+})
+
+app.post("/peticion", (req, res) => {
+
+})
+
+app.put("/peticion", (req, res) => {
+
+})
+
+app.get("/empleado/:correo/modelos", (req, res) => {
+
+})
+
+app.get("/empresa/:correo/modelos", (req, res) => {
+  
+})
+
+app.get("/cliente/:correo/modelos", (req, res) => {
+  
+})
 
 
 app.listen(port, () => {

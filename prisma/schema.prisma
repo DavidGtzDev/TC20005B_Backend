@@ -69,7 +69,7 @@ model Edicion {
   id_modelo             Int
   correo_empleado       String
   fecha_de_modificacion DateTime @default(now())
-  archivo               Bytes
+  archivo               String
   modelo                Modelo   @relation(fields: [id_modelo], references: [id_modelo])
   empleado              Empleado @relation(fields: [correo_empleado], references: [correo_empleado])
 
