@@ -34,6 +34,8 @@ app.get("/empleados", (req: Request, res: Response) => {
     });
 });
 
+app.delete("/empleado/:correo", (req: Request, res: Response) => {});
+
 app.post("/empresas", (req: Request, res: Response) => {
   QueryHandler.darDeAltaEmpresa(req, prisma)
     .then(async () => {
@@ -57,6 +59,8 @@ app.get("/empresas", (req: Request, res: Response) => {
       res.send(e);
     });
 });
+
+app.delete("/empresa/:id", (req: Request, res: Response) => {});
 
 app.post("/clientes", (req: Request, res: Response) => {
   QueryHandler.darDeAltaCliente(req, prisma)
@@ -82,6 +86,8 @@ app.get("/clientes", (req: Request, res: Response) => {
     });
 });
 
+app.delete("/cliente/:id", (req: Request, res: Response) => {});
+
 app.post("/modelos", (req: Request, res: Response) => {
   QueryHandler.crearModelo(req, prisma)
     .then(async () => {
@@ -106,6 +112,8 @@ app.get("/modelos", (req: Request, res: Response) => {
     });
 });
 
+app.delete("/modelo/:id", (req: Request, res: Response) => {});
+
 app.post("/modelos/:id/archivo", upload.single("file"), (req, res) => {
   //console.log(req.file?.path)
   QueryHandler.agregarArchivoAModelo(req, prisma)
@@ -121,7 +129,7 @@ app.post("/modelos/:id/archivo", upload.single("file"), (req, res) => {
 
 //app.use('/static', express.static('public'))
 
-app.get("/modelos/:id/archivo", (req, res) => {
+app.get("/modelos/:id/archivo", (req: Request, res: Response) => {
   QueryHandler.obtenerArchivoModelo(req, prisma)
     .then(async (path) => {
       await prisma.$disconnect();
@@ -161,44 +169,117 @@ app.get("/editores/:id", (req, res) => {
       await prisma.$disconnect();
       res.send(e);
     });
-});   
+});
 
-app.post("/guardar", upload.single("file"), (req, res) => {   
-  QueryHandler.guardarNuevaVersionDelModelo(req, prisma)
-    .then(async() => {
+
+app.delete("/editores/:id", (req: Request, res: Response) => {
+  QueryHandler.eliminarEditorDeModelo(req, prisma)
+    .then(async () => {
       await prisma.$disconnect();
-      res.send("WIJIU")
+      res.send("WIJIU");
     })
     .catch(async (e) => {
       await prisma.$disconnect();
       res.send(e);
     });
-})
+});
 
-app.get("/peticion", (req, res) => {
 
-})
+app.post("/guardar/:id/:editor", upload.single("file"), (req, res) => {
+  QueryHandler.guardarNuevaVersionDelModelo(req, prisma)
+    .then(async () => {
+      await prisma.$disconnect();
+      res.send("WIJIU");
+    })
+    .catch(async (e) => {
+      await prisma.$disconnect();
+      res.send(e);
+    });
+});
 
-app.post("/peticion", (req, res) => {
+app.get("/peticion/:id", (req, res) => {
+  QueryHandler.obtenerPeticionesDeUnArchivo(req, prisma)
+    .then(async (peticiones) => {
+      await prisma.$disconnect();
+      res.send(peticiones);
+    })
+    .catch(async (e) => {
+      await prisma.$disconnect();
+      res.send(e);
+    });
+});
 
-})
+app.post("/peticion/:id", (req, res) => {
+  QueryHandler.crearNuevaPeticion(req, prisma)
+    .then(async () => {
+      await prisma.$disconnect();
+      res.send("WIJIU");
+    })
+    .catch(async (e) => {
+      await prisma.$disconnect();
+      res.send(e);
+    });
+});
 
-app.put("/peticion", (req, res) => {
+app.put("/peticion/:id", (req, res) => {
+  QueryHandler.actualizarPeticion(req, prisma)
+    .then(async () => {
+      await prisma.$disconnect();
+      res.send("WIJIU");
+    })
+    .catch(async (e) => {
+      await prisma.$disconnect();
+      res.send(e);
+    });
+});
 
-})
+app.delete("/peticion/:id", (req, res) => {
+  QueryHandler.eliminarPeticion(req, prisma)
+    .then(async () => {
+      await prisma.$disconnect();
+      res.send("WIJIU");
+    })
+    .catch(async (e) => {
+      await prisma.$disconnect();
+      res.send(e);
+    });
+});
 
 app.get("/empleado/:correo/modelos", (req, res) => {
-
-})
+  QueryHandler.obtenerModelosHechosPorUnEmpleado(req, prisma)
+    .then(async (modelos) => {
+      await prisma.$disconnect();
+      res.send(modelos);
+    })
+    .catch(async (e) => {
+      await prisma.$disconnect();
+      res.send(e);
+    });
+});
 
 app.get("/empresa/:correo/modelos", (req, res) => {
-  
-})
+  QueryHandler.obtenerModelosDeUnaEmpresa(req, prisma)
+    .then(async (modelos) => {
+      await prisma.$disconnect();
+      res.send(modelos);
+    })
+    .catch(async (e) => {
+      await prisma.$disconnect();
+      res.send(e);
+    });
+});
 
 app.get("/cliente/:correo/modelos", (req, res) => {
-  
-})
-
+  QueryHandler.obtenerModelosDeUnCliente(req, prisma)
+    .then(async (modelos) => {
+      await prisma.$disconnect();
+      res.send(modelos);
+    })
+    .catch(async (e) => {
+      await prisma.$disconnect();
+      res.send(e);
+    });
+});
 
 app.listen(port, () => {
   console.log(`Server running at http://localhost:${port}`);
