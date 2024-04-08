@@ -34,7 +34,17 @@ app.get("/empleados", (req: Request, res: Response) => {
     });
 });
 
-app.delete("/empleado/:correo", (req: Request, res: Response) => {});
+app.delete("/empleado/:correo", (req: Request, res: Response) => {
+  QueryHandler.eliminarEmpleado(req, prisma)
+    .then(async () => {
+      await prisma.$disconnect();
+      res.send("WIJIU");
+    })
+    .catch(async (e) => {
+      await prisma.$disconnect();
+      res.send(e);
+    });
+});
 
 app.post("/empresas", (req: Request, res: Response) => {
   QueryHandler.darDeAltaEmpresa(req, prisma)
@@ -60,7 +70,17 @@ app.get("/empresas", (req: Request, res: Response) => {
     });
 });
 
-app.delete("/empresa/:id", (req: Request, res: Response) => {});
+app.delete("/empresa/:id", (req: Request, res: Response) => {
+  QueryHandler.eliminarEmpresa(req, prisma)
+    .then(async () => {
+      await prisma.$disconnect();
+      res.send("WIJIU");
+    })
+    .catch(async (e) => {
+      await prisma.$disconnect();
+      res.send(e);
+    });
+});
 
 app.post("/clientes", (req: Request, res: Response) => {
   QueryHandler.darDeAltaCliente(req, prisma)
@@ -86,7 +106,17 @@ app.get("/clientes", (req: Request, res: Response) => {
     });
 });
 
-app.delete("/cliente/:id", (req: Request, res: Response) => {});
+app.delete("/cliente/:id", (req: Request, res: Response) => {
+  QueryHandler.eliminarCliente(req, prisma)
+    .then(async () => {
+      await prisma.$disconnect();
+      res.send("WIJIU");
+    })
+    .catch(async (e) => {
+      await prisma.$disconnect();
+      res.send(e);
+    });
+});
 
 app.post("/modelos", (req: Request, res: Response) => {
   QueryHandler.crearModelo(req, prisma)
@@ -112,7 +142,17 @@ app.get("/modelos", (req: Request, res: Response) => {
     });
 });
 
-app.delete("/modelo/:id", (req: Request, res: Response) => {});
+app.delete("/modelo/:id", (req: Request, res: Response) => {
+  QueryHandler.eliminarModelo(req, prisma)
+    .then(async () => {
+      await prisma.$disconnect();
+      res.send("WIJIU");
+    })
+    .catch(async (e) => {
+      await prisma.$disconnect();
+      res.send(e);
+    });
+});
 
 app.post("/modelos/:id/archivo", upload.single("file"), (req, res) => {
   //console.log(req.file?.path)

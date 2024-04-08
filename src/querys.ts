@@ -410,4 +410,52 @@ export module QueryHandler {
 
     return modelos;
   }
+
+  export async function eliminarCliente (req: Request, prisma: PrismaClient) {
+    if (!req.params["correo"]) {
+      throw new Error("No pusiste correo_cliente en la direccion papu :v");
+    }
+
+    const cliente = await prisma.cliente.deleteMany({
+      where: {
+        correo_cliente: req.params["correo"],
+      },
+    });
+  }
+
+  export async function eliminarEmpresa (req: Request, prisma: PrismaClient) {
+    if (!req.params["correo"]) {
+      throw new Error("No pusiste correo_empresa en la direccion papu :v");
+    }
+
+    const empresa = await prisma.empresa.deleteMany({
+      where: {
+        correo_empresa: req.params["correo"],
+      },
+    });
+  }
+
+  export async function eliminarEmpleado (req: Request, prisma: PrismaClient) {
+    if (!req.params["correo"]) {
+      throw new Error("No pusiste correo_empleado en la direccion papu :v");
+    }
+
+    const empleado = await prisma.empleado.deleteMany({
+      where: {
+        correo_empleado: req.params["correo"],
+      },
+    });
+  }
+
+  export async function eliminarModelo (req: Request, prisma: PrismaClient) {
+    if (!req.params["id"]) {
+      throw new Error("No pusiste id en la direccion papu :v");
+    }
+
+    const modelo = await prisma.modelo.deleteMany({
+      where: {
+        id_modelo: parseInt(req.params["id"]) || 0,
+      },
+    });
+  }
 }
