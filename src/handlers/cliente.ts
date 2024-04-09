@@ -1,9 +1,21 @@
 import { prisma } from "../prisma/client";
 import { Request } from "express";
 
+interface Cliente {
+  nombre_cliente: string;
+  correo_cliente: string;
+  telefono_cliente: string;
+  correo_empresa: string;
+}
+
+interface ParamEliminar {
+  correo: string;
+}
+
+
 export module HandleCliente {
   export async function crear(req: Request) {
-    let json = req.body;
+    let json = req.body as Cliente[] | Cliente;
 
     if (Array.isArray(json)) {
       for (const data of json) {
@@ -24,13 +36,11 @@ export module HandleCliente {
   }
 
   export async function eliminar(req: Request) {
-    if (!req.params["correo"]) {
-      throw new Error("No pusiste correo_cliente en la direccion papu :v");
-    }
-
+    let params = req.params as unknown as ParamEliminar;
+    
     const cliente = await prisma.cliente.deleteMany({
       where: {
-        correo_cliente: req.params["correo"],
+        correo_cliente: params.correo,
       },
     });
   }
