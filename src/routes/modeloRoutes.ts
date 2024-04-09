@@ -59,7 +59,9 @@ router.get("/:id/archivo", (req: Request, res: Response) => {
       await prisma.$disconnect();
       if (path) {
         let cleanPath = path.replace(/src\\/g, "");
-        const file = `${__dirname}` + "/" + cleanPath;
+        let dir =  __dirname
+        const file = dir.replace(/\\routes/g, "") + "\\" + cleanPath;
+        
         res.download(file);
       } else {
         res.send("No hay archivo papu :v");
