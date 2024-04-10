@@ -98,6 +98,7 @@ export module HandleModelo {
   }
 
   export async function guardarNuevaVersion(req: Request) {
+    //TODO: Checar que quien guarde si sea editor de ese archivo
     const file = req.file?.path;
 
     if (!file) {
