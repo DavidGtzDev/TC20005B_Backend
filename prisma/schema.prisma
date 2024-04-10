@@ -33,20 +33,19 @@ model Cliente {
   correo_cliente   String     @id @unique
   telefono_cliente String     @unique
   correo_empresa   String
-  empresa          Empresa    @relation(fields: [correo_empresa], references: [correo_empresa])
+  empresa          Empresa    @relation(fields: [correo_empresa], references: [correo_empresa], onDelete: Cascade)
   Modelo           Modelo[]
-  Peticion         Peticion[]
 }
 
 model Creador {
   correo_creador String   @id @unique
-  empleado       Empleado @relation(fields: [correo_creador], references: [correo_empleado])
+  empleado       Empleado @relation(fields: [correo_creador], references: [correo_empleado], onDelete: Cascade)
   Modelo         Modelo[]
 }
 
 model Editor {
   correo_editor     String              @id @unique
-  empleado          Empleado            @relation(fields: [correo_editor], references: [correo_empleado])
+  empleado          Empleado            @relation(fields: [correo_editor], references: [correo_empleado], onDelete: Cascade)
   EditoresDeModelos EditoresDeModelos[]
 }
 
@@ -57,12 +56,11 @@ model Modelo {
   correo_creador    String
   correo_empresa    String
   correo_cliente    String
-  creador           Creador             @relation(fields: [correo_creador], references: [correo_creador])
-  empresa           Empresa             @relation(fields: [correo_empresa], references: [correo_empresa])
-  cliente           Cliente             @relation(fields: [correo_cliente], references: [correo_cliente])
+  creador           Creador             @relation(fields: [correo_creador], references: [correo_creador], onDelete: Cascade)
+  empresa           Empresa             @relation(fields: [correo_empresa], references: [correo_empresa], onDelete: Cascade)
+  cliente           Cliente             @relation(fields: [correo_cliente], references: [correo_cliente], onDelete: Cascade)
   Edicion           Edicion[]
   EditoresDeModelos EditoresDeModelos[]
-  Peticion          Peticion[]
 }
 
 model Edicion {
@@ -70,8 +68,8 @@ model Edicion {
   correo_empleado       String
   fecha_de_modificacion DateTime @default(now())
   archivo               String
-  modelo                Modelo   @relation(fields: [id_modelo], references: [id_modelo])
-  empleado              Empleado @relation(fields: [correo_empleado], references: [correo_empleado])
+  modelo                Modelo   @relation(fields: [id_modelo], references: [id_modelo], onDelete: Cascade)
+  empleado              Empleado @relation(fields: [correo_empleado], references: [correo_empleado], onDelete: Cascade)
 
   @@id(name: "id_edicion", [id_modelo, correo_empleado, fecha_de_modificacion])
 }
@@ -79,20 +77,9 @@ model Edicion {
 model EditoresDeModelos {
   correo_editor String
   id_modelo     Int
-  modelo        Modelo @relation(fields: [id_modelo], references: [id_modelo])
-  editor        Editor @relation(fields: [correo_editor], references: [correo_editor])
+  modelo        Modelo @relation(fields: [id_modelo], references: [id_modelo], onDelete: Cascade)
+  editor        Editor @relation(fields: [correo_editor], references: [correo_editor], onDelete: Cascade)
 
   @@id(name: "id_editores_de_modelos", [correo_editor, id_modelo])
 }
 
-model Peticion {
-  correo_cliente   String
-  id_modelo        Int
-  fecha_de_emision DateTime @default(now())
-  contenido        String
-  estatus          Boolean
-  cliente          Cliente  @relation(fields: [correo_cliente], references: [correo_cliente])
-  modelo           Modelo   @relation(fields: [id_modelo], references: [id_modelo])
-
-  @@id(name: "id_peticion", [correo_cliente, id_modelo, fecha_de_emision])
-}

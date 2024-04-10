@@ -1,27 +1,25 @@
 import { prisma } from "../prisma/client";
 import { Request } from "express";
 
+interface Editor{
+  correo_editor: string;
+  id_modelo: number;
+}
 export module HandleEditor {
   export async function crear(req: Request) {
-    let json = req.body;
+    let json = req.body as Editor;
 
-    if (!json || !json["correo_editor"] || !json["id_modelo"]) {
-      throw new Error("Missing 'correo_creador' field in JSON");
-    }
-
-    const editor = json["correo_editor"];
-    const modelo = json["id_modelo"];
 
     const nuevoEditor = await prisma.editor.create({
       data: {
-        correo_editor: editor,
+        correo_editor: json.correo_editor,
       },
     });
 
     const nuevaRelacionEditorModelo = await prisma.editoresDeModelos.create({
       data: {
-        correo_editor: editor || "",
-        id_modelo: parseInt(modelo) || 0,
+        correo_editor: json.correo_editor,
+        id_modelo: json.id_modelo ,
       },
     });
   }
