@@ -107,6 +107,28 @@ export module HandleModelo {
       throw new Error("No pusiste id en la direccion papu :v");
     }
 
+    await prisma.creador.findMany({
+      where: {
+        correo_creador: req.params["editor"],
+        id_modelo: parseInt(req.params["id"]) || 0,
+      },
+    }).then((creador) => {
+      if (creador.length === 0) {
+        throw new Error("No tienes permiso para editar este archivo");
+      }
+    } );
+
+    await prisma.editoresDeModelos.findMany({
+      where: {
+        correo_editor: req.params["editor"],
+        id_modelo: parseInt(req.params["id"]) || 0,
+      },
+    }).then((editor) => {
+      if (editor.length === 0) {
+        throw new Error("No tienes permiso para editar este archivo");
+      }
+    });
+
     
     const modelo = await prisma.modelo.findUnique({
       where: {
