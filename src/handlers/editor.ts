@@ -1,14 +1,25 @@
 import { prisma } from "../prisma/client";
 import { Request } from "express";
 
-interface Editor{
+interface Editor {
   correo_editor: string;
   id_modelo: number;
 }
 export module HandleEditor {
   export async function crear(req: Request) {
     let json = req.body as Editor;
-
+    await prisma.creador
+      .findMany({
+        where: {
+          correo_creador: json.correo_editor,
+          id_modelo: json.id_modelo,
+        },
+      })
+      .then((creador) => {
+        if (creador.length > 0) {
+          throw new Error("El creador no puede ser editor de su propio modelo");
+        }
+      });
 
     const nuevoEditor = await prisma.editor.create({
       data: {
@@ -19,7 +30,7 @@ export module HandleEditor {
     const nuevaRelacionEditorModelo = await prisma.editoresDeModelos.create({
       data: {
         correo_editor: json.correo_editor,
-        id_modelo: json.id_modelo ,
+        id_modelo: json.id_modelo,
       },
     });
   }

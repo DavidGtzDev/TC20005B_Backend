@@ -1,38 +1,36 @@
 import { prisma } from "../prisma/client";
 import { Request } from "express";
-
+interface Modelo{
+  correo_creador: string,
+  correo_cliente: string
+}
 export module HandleModelo {
   export async function crear(req: Request) {
     //Crear una interfaz en typescript
-    let json = req.body;
-
-
-    if (!json || !json["correo_creador"] || !json["correo_cliente"]) {
-      throw new Error("Missing 'correo_creador' field in JSON");
-    }
-
-    const creador = json["correo_creador"];
-    const cliente = json["correo_cliente"];
-
-    const nuevoCreado = await prisma.creador.create({
-      data: {
-        correo_creador: creador,
-      },
-    });
+    let json = req.body as Modelo;
 
     const clienteModelo = await prisma.cliente.findUnique({
       where: {
-        correo_cliente: cliente,
+        correo_cliente: json.correo_cliente,
       },
     });
 
     const nuevoModelo = await prisma.modelo.create({
       data: {
-        correo_creador: creador,
-        correo_cliente: cliente,
+        correo_creador: json.correo_creador,
+        correo_cliente: json.correo_cliente,
         correo_empresa: clienteModelo?.correo_empresa || "",
       },
+    })
+
+    const nuevoCreado = await prisma.creador.create({
+      data: {
+        correo_creador: json.correo_creador,
+        id_modelo: nuevoModelo.id_modelo,
+      },
     });
+
+
   }
 
   export async function obtener() {
@@ -109,6 +107,7 @@ export module HandleModelo {
       throw new Error("No pusiste id en la direccion papu :v");
     }
 
+    
     const modelo = await prisma.modelo.findUnique({
       where: {
         id_modelo: parseInt(req.params["id"]) || 0,
