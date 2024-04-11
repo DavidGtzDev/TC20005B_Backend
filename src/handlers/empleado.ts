@@ -39,6 +39,18 @@ export module HandleEmpleado {
       throw new Error("No pusiste correo_empleado en la direccion papu :v");
     }
 
+    await prisma.creador.deleteMany({
+      where: {
+        correo_creador: req.params["correo"],
+      },
+    });
+
+    await prisma.modelo.deleteMany({
+      where: {
+        correo_creador: req.params["correo"],
+      },
+    });
+
     const empleado = await prisma.empleado.deleteMany({
       where: {
         correo_empleado: req.params["correo"],

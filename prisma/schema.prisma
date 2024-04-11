@@ -30,17 +30,20 @@ model Empresa {
 
 model Cliente {
   nombre_cliente   String
-  correo_cliente   String     @id @unique
-  telefono_cliente String     @unique
+  correo_cliente   String   @id @unique
+  telefono_cliente String   @unique
   correo_empresa   String
-  empresa          Empresa    @relation(fields: [correo_empresa], references: [correo_empresa], onDelete: Cascade)
+  empresa          Empresa  @relation(fields: [correo_empresa], references: [correo_empresa], onDelete: Cascade)
   Modelo           Modelo[]
 }
 
 model Creador {
-  correo_creador String   @id @unique
-  empleado       Empleado @relation(fields: [correo_creador], references: [correo_empleado], onDelete: Cascade)
-  Modelo         Modelo[]
+  correo_creador String
+  id_modelo      Int
+  Modelo         Modelo   @relation(fields: [id_modelo], references: [id_modelo], onDelete: Cascade)
+  Empleado       Empleado @relation(fields: [correo_creador], references: [correo_empleado], onDelete: Cascade)
+
+  @@id(name: "id_creador", [correo_creador, id_modelo])
 }
 
 model Editor {
@@ -56,11 +59,11 @@ model Modelo {
   correo_creador    String
   correo_empresa    String
   correo_cliente    String
-  creador           Creador             @relation(fields: [correo_creador], references: [correo_creador], onDelete: Cascade)
   empresa           Empresa             @relation(fields: [correo_empresa], references: [correo_empresa], onDelete: Cascade)
   cliente           Cliente             @relation(fields: [correo_cliente], references: [correo_cliente], onDelete: Cascade)
   Edicion           Edicion[]
   EditoresDeModelos EditoresDeModelos[]
+  Creador           Creador[]
 }
 
 model Edicion {
@@ -82,4 +85,3 @@ model EditoresDeModelos {
 
   @@id(name: "id_editores_de_modelos", [correo_editor, id_modelo])
 }
-
