@@ -1,5 +1,6 @@
 import { prisma } from "../prisma/client";
 import { Request } from "express";
+import jwt from "jsonwebtoken";
 
 interface Cliente {
   nombre_cliente: string;
@@ -37,6 +38,13 @@ export module HandleCliente {
 
   export async function eliminar(req: Request) {
     let params = req.params as unknown as ParamEliminar;
+
+    let token = req.params.token;
+    let decoded = jwt.verify(token, "secret")
+
+    if (!decoded) {
+      throw new Error("Token invalido");
+    }
     
     const cliente = await prisma.cliente.deleteMany({
       where: {

@@ -20,30 +20,36 @@ model Empleado {
   Edicion           Edicion[]
 }
 
+model Modelo {
+  archivo_modelo String   @id
+  id_proyecto    Int
+  proyecto       Proyecto @relation(fields: [id_proyecto], references: [id_proyecto], onDelete: Cascade)
+}
+
 model Empresa {
   nombre_empresa   String
-  correo_empresa   String    @id @unique
-  telefono_empresa String    @unique
+  correo_empresa   String     @id @unique
+  telefono_empresa String     @unique
   Cliente          Cliente[]
-  Modelo           Modelo[]
+  Modelo           Proyecto[]
 }
 
 model Cliente {
   nombre_cliente   String
-  correo_cliente   String   @id @unique
-  telefono_cliente String   @unique
+  correo_cliente   String     @id @unique
+  telefono_cliente String     @unique
   correo_empresa   String
-  empresa          Empresa  @relation(fields: [correo_empresa], references: [correo_empresa], onDelete: Cascade)
-  Modelo           Modelo[]
+  empresa          Empresa    @relation(fields: [correo_empresa], references: [correo_empresa], onDelete: Cascade)
+  Modelo           Proyecto[]
 }
 
 model Creador {
   correo_creador String
-  id_modelo      Int
-  Modelo         Modelo   @relation(fields: [id_modelo], references: [id_modelo], onDelete: Cascade)
+  id_proyecto    Int
+  Modelo         Proyecto @relation(fields: [id_proyecto], references: [id_proyecto], onDelete: Cascade)
   Empleado       Empleado @relation(fields: [correo_creador], references: [correo_empleado], onDelete: Cascade)
 
-  @@id(name: "id_creador", [correo_creador, id_modelo])
+  @@id(name: "id_creador", [correo_creador, id_proyecto])
 }
 
 model Editor {
@@ -52,10 +58,9 @@ model Editor {
   EditoresDeModelos EditoresDeModelos[]
 }
 
-model Modelo {
-  id_modelo         Int                 @id @default(autoincrement())
+model Proyecto {
+  id_proyecto       Int                 @id @default(autoincrement())
   fecha_de_creacion DateTime            @default(now())
-  archivo           String?
   correo_creador    String
   correo_empresa    String
   correo_cliente    String
@@ -64,24 +69,25 @@ model Modelo {
   Edicion           Edicion[]
   EditoresDeModelos EditoresDeModelos[]
   Creador           Creador[]
+  Modelo            Modelo[]
 }
 
 model Edicion {
-  id_modelo             Int
+  id_proyecto           Int
   correo_empleado       String
   fecha_de_modificacion DateTime @default(now())
   archivo               String
-  modelo                Modelo   @relation(fields: [id_modelo], references: [id_modelo], onDelete: Cascade)
+  proyecto              Proyecto @relation(fields: [id_proyecto], references: [id_proyecto], onDelete: Cascade)
   empleado              Empleado @relation(fields: [correo_empleado], references: [correo_empleado], onDelete: Cascade)
 
-  @@id(name: "id_edicion", [id_modelo, correo_empleado, fecha_de_modificacion])
+  @@id(name: "id_edicion", [id_proyecto, correo_empleado, fecha_de_modificacion])
 }
 
 model EditoresDeModelos {
   correo_editor String
-  id_modelo     Int
-  modelo        Modelo @relation(fields: [id_modelo], references: [id_modelo], onDelete: Cascade)
-  editor        Editor @relation(fields: [correo_editor], references: [correo_editor], onDelete: Cascade)
+  id_proyecto   Int
+  proyecto      Proyecto @relation(fields: [id_proyecto], references: [id_proyecto], onDelete: Cascade)
+  editor        Editor   @relation(fields: [correo_editor], references: [correo_editor], onDelete: Cascade)
 
-  @@id(name: "id_editores_de_modelos", [correo_editor, id_modelo])
+  @@id(name: "id_editores_de_modelos", [correo_editor, id_proyecto])
 }

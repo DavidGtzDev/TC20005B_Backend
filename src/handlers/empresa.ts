@@ -1,5 +1,6 @@
 import { prisma } from "../prisma/client";
 import { Request } from "express";
+import jwt from "jsonwebtoken";
 
 export module HandleEmpresa {
   export async function crear(req: Request) {
@@ -26,6 +27,13 @@ export module HandleEmpresa {
   export async function eliminar(req: Request) {
     if (!req.params["correo"]) {
       throw new Error("No pusiste correo_empresa en la direccion papu :v");
+    }
+
+    let token = req.params.token;
+    let decoded = jwt.verify(token, "secret")
+
+    if (!decoded) {
+      throw new Error("Token invalido");
     }
 
     const empresa = await prisma.empresa.deleteMany({

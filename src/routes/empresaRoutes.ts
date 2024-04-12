@@ -28,7 +28,7 @@ router.get("/", (req: Request, res: Response) => {
     });
 });
 
-router.delete("/:correo", (req: Request, res: Response) => {
+router.delete("/:correo/:token", (req: Request, res: Response) => {
   HandleEmpresa.eliminar(req)
     .then(async () => {
       await prisma.$disconnect();
