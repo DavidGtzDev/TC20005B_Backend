@@ -3,7 +3,7 @@ import empleadoRoutes from "./routes/empleadoRoutes";
 import empresaRoutes from "./routes/empresaRoutes";
 import editorRoutes from "./routes/editorRoutes";
 import clienteRoutes from "./routes/clienteRoutes";
-import modeloRoutes from "./routes/modeloRoutes";
+import proyectoRoutes from "./routes/proyectoRoutes";
 import loginRoute from "./routes/loginRoute";
 
 const app = express();
@@ -15,7 +15,7 @@ app.use("/empleado", empleadoRoutes);
 app.use("/empresa", empresaRoutes);
 app.use("/editor", editorRoutes);
 app.use("/cliente", clienteRoutes);
-app.use("/modelo", modeloRoutes);
+app.use("/proyecto", proyectoRoutes);
 app.use("/login", loginRoute);
 
 

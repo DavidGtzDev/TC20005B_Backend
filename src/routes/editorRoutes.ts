@@ -4,7 +4,7 @@ import { prisma } from "../prisma/client";
 
 const router = express.Router();
 
-router.post("/", (req: Request, res: Response) => {
+router.post("/:token", (req: Request, res: Response) => {
   HandleEditor.crear(req)
     .then(async () => {
       await prisma.$disconnect();
@@ -16,7 +16,7 @@ router.post("/", (req: Request, res: Response) => {
     });
 });
 
-router.get("/:id", (req: Request, res: Response) => {
+router.get("/:id/:token", (req: Request, res: Response) => {
   HandleEditor.obtener(req)
     .then(async (lista) => {
       await prisma.$disconnect();
@@ -28,7 +28,7 @@ router.get("/:id", (req: Request, res: Response) => {
     });
 });
 
-router.delete("/:id/:editor", (req: Request, res: Response) => {
+router.delete("/:id/:editor/:token", (req: Request, res: Response) => {
   HandleEditor.eliminar(req)
     .then(async () => {
       await prisma.$disconnect();

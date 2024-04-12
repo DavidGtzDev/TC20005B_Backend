@@ -1,12 +1,12 @@
 import express, { Request, Response } from "express";
-import { HandleModelo } from "../handlers/modelo";
+import { HandleProyecto } from "../handlers/proyecto";
 import { prisma } from "../prisma/client";
 import upload from "../middleware/upload";
 
 const router = express.Router();
 
-router.post("/", (req: Request, res: Response) => {
-  HandleModelo.crear(req)
+router.post("/:token", (req: Request, res: Response) => {
+  HandleProyecto.crear(req)
     .then(async () => {
       await prisma.$disconnect();
       res.send("WIJIU");
@@ -17,8 +17,8 @@ router.post("/", (req: Request, res: Response) => {
     });
 });
 
-router.get("/", (req: Request, res: Response) => {
-  HandleModelo.obtener()
+router.get("/:token", (req: Request, res: Response) => {
+  HandleProyecto.obtener(req)
     .then(async (lista) => {
       await prisma.$disconnect();
       res.send(lista);
@@ -29,8 +29,8 @@ router.get("/", (req: Request, res: Response) => {
     });
 });
 
-router.delete("/:id", (req: Request, res: Response) => {
-  HandleModelo.eliminar(req)
+router.delete("/:id/:token", (req: Request, res: Response) => {
+  HandleProyecto.eliminar(req)
     .then(async () => {
       await prisma.$disconnect();
       res.send("WIJIU");
@@ -41,8 +41,8 @@ router.delete("/:id", (req: Request, res: Response) => {
     });
 });
 
-router.post("/:id/archivo", upload.single("file"), (req, res) => {
-  HandleModelo.agregarArchivo(req)
+router.post("/:id/archivo/:token", upload.single("file"), (req, res) => {
+  HandleProyecto.agregarArchivo(req)
     .then(async () => {
       await prisma.$disconnect();
       res.send("WIJIU");
@@ -53,12 +53,14 @@ router.post("/:id/archivo", upload.single("file"), (req, res) => {
     });
 });
 
-router.get("/:id/archivo", (req: Request, res: Response) => {
-  HandleModelo.obtenerArchivo(req)
+
+
+router.get("/:id/archivo/:token", (req: Request, res: Response) => {
+  HandleProyecto.obtenerArchivo(req)
     .then(async (path) => {
       await prisma.$disconnect();
       if (path) {
-        let cleanPath = path.replace(/src\\/g, "");
+        let cleanPath = path.Modelo[0].archivo_modelo.replace(/src\\/g, "");
         let dir =  __dirname
         const file = dir.replace(/\\routes/g, "") + "\\" + cleanPath;
         
@@ -73,20 +75,8 @@ router.get("/:id/archivo", (req: Request, res: Response) => {
     });
 });
 
-router.post("/guardar/:id/:editor", upload.single("file"), (req, res) => {
-  HandleModelo.guardarNuevaVersion(req)
-    .then(async () => {
-      await prisma.$disconnect();
-      res.send("WIJIU");
-    })
-    .catch(async (e) => {
-      await prisma.$disconnect();
-      res.send(e);
-    });
-});
-
-router.get("/empleado/:correo", (req, res) => {
-  HandleModelo.filtrarPorEmpleado(req)
+router.get("/empleado/:correo/:token", (req, res) => {
+  HandleProyecto.filtrarPorEmpleado(req)
     .then(async (modelos) => {
       await prisma.$disconnect();
       res.send(modelos);
@@ -97,8 +87,8 @@ router.get("/empleado/:correo", (req, res) => {
     });
 });
 
-router.get("/empresa/:correo", (req, res) => {
-  HandleModelo.filtrarPorEmpresa(req)
+router.get("/empresa/:correo/:token", (req, res) => {
+  HandleProyecto.filtrarPorEmpresa(req)
     .then(async (modelos) => {
       await prisma.$disconnect();
       res.send(modelos);
@@ -109,8 +99,8 @@ router.get("/empresa/:correo", (req, res) => {
     });
 });
 
-router.get("/cliente/:correo", (req, res) => {
-  HandleModelo.filtrarPorCliente(req)
+router.get("/cliente/:correo/:token", (req, res) => {
+  HandleProyecto.filtrarPorCliente(req)
     .then(async (modelos) => {
       await prisma.$disconnect();
       res.send(modelos);
