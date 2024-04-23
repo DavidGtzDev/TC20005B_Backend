@@ -65,5 +65,26 @@ export module HandleEmpleado {
     });
   }
 
+  export async function obtenerPorCorreo(req: Request) {
+    if (!req.params["correo"]) {
+      throw new Error("No pusiste correo_empleado en la direccion papu :v");
+    }
+
+    let token = req.params.token;
+    let decoded = jwt.verify(token, "secret")
+
+    if (!decoded) {
+      throw new Error("Token invalido");
+    }
+
+    const empleado = await prisma.empleado.findUnique({
+      where: {
+        correo_empleado: req.params["correo"],
+      },
+    });
+
+    return empleado;
+  }
+
 
 }

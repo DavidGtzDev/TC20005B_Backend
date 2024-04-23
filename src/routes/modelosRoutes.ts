@@ -1,23 +1,11 @@
 import express, { Request, Response } from "express";
-import { HandleEmpleado } from "../handlers/empleado";
 import { prisma } from "../prisma/client";
+import { HandleModelo } from "../handlers/modelo";
 
 const router = express.Router();
 
-router.post("/", (req: Request, res: Response) => {
-  HandleEmpleado.crear(req)
-    .then(async () => {
-      await prisma.$disconnect();
-      res.send("WIJIU");
-    })
-    .catch(async (e) => {
-      await prisma.$disconnect();
-      res.send(e);
-    });
-});
-
 router.get("/", (req: Request, res: Response) => {
-  HandleEmpleado.obtener()
+  HandleModelo.obtener()
     .then(async (lista) => {
       await prisma.$disconnect();
       res.send(lista);
@@ -28,8 +16,8 @@ router.get("/", (req: Request, res: Response) => {
     });
 });
 
-router.get("/:correo/:token", (req: Request, res: Response) => {
-  HandleEmpleado.obtenerPorCorreo(req)
+router.get("/:id", (req: Request, res: Response) => {
+  HandleModelo.obtenerPorProyecto(req)
     .then(async (lista) => {
       await prisma.$disconnect();
       res.send(lista);
@@ -40,11 +28,11 @@ router.get("/:correo/:token", (req: Request, res: Response) => {
     });
 });
 
-router.delete("/:correo/:token", (req: Request, res: Response) => {
-  HandleEmpleado.eliminar(req)
-    .then(async () => {
+router.get("/empresa/:correo", (req: Request, res: Response) => {
+  HandleModelo.obtenerModelosPorEmpresa(req)
+    .then(async (lista) => {
       await prisma.$disconnect();
-      res.send("WIJIU");
+      res.send(lista);
     })
     .catch(async (e) => {
       await prisma.$disconnect();

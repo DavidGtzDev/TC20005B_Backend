@@ -21,9 +21,18 @@ model Empleado {
 }
 
 model Modelo {
-  archivo_modelo String   @id
-  id_proyecto    Int
-  proyecto       Proyecto @relation(fields: [id_proyecto], references: [id_proyecto], onDelete: Cascade)
+  id_modelo Int @id @default(autoincrement())
+  nombre_modelo String
+  archivo_modelo String
+  ModeloProyecto ModeloProyecto[]
+}
+
+model ModeloProyecto {
+  id_modelo Int
+  id_proyecto   Int
+  modelo Modelo @relation(fields: [id_modelo], references: [id_modelo], onDelete: Cascade)
+  proyecto Proyecto @relation(fields: [id_proyecto], references: [id_proyecto], onDelete: Cascade)
+  @@id(name: "id_modelo_proyecto", [id_modelo, id_proyecto])
 }
 
 model Empresa {
@@ -40,7 +49,7 @@ model Cliente {
   telefono_cliente String     @unique
   correo_empresa   String
   empresa          Empresa    @relation(fields: [correo_empresa], references: [correo_empresa], onDelete: Cascade)
-  Modelo           Proyecto[]
+  Proyecto           Proyecto[]
 }
 
 model Creador {
@@ -61,6 +70,7 @@ model Editor {
 model Proyecto {
   id_proyecto       Int                 @id @default(autoincrement())
   fecha_de_creacion DateTime            @default(now())
+  nombre_proyecto   String
   correo_creador    String
   correo_empresa    String
   correo_cliente    String
@@ -69,7 +79,7 @@ model Proyecto {
   Edicion           Edicion[]
   EditoresDeModelos EditoresDeModelos[]
   Creador           Creador[]
-  Modelo            Modelo[]
+  ModeloProyecto ModeloProyecto[]
 }
 
 model Edicion {
