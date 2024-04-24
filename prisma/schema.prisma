@@ -24,6 +24,7 @@ model Modelo {
   id_modelo Int @id @default(autoincrement())
   nombre_modelo String
   archivo_modelo String
+  fecha_de_creacion DateTime @default(now())
   ModeloProyecto ModeloProyecto[]
 }
 

@@ -41,7 +41,7 @@ router.delete("/:id/:token", (req: Request, res: Response) => {
     });
 });
 
-router.post("/:id/archivo/:token", upload.single("file"), (req, res) => {
+router.post("/:id/archivo/:name/:token", upload.single("file"), (req, res) => {
   HandleProyecto.agregarArchivo(req)
     .then(async () => {
       await prisma.$disconnect();
@@ -55,24 +55,8 @@ router.post("/:id/archivo/:token", upload.single("file"), (req, res) => {
 
 
 
-router.get("/:id/archivo/:token", (req: Request, res: Response) => {
-  HandleProyecto.obtenerArchivo(req)
-    .then(async (path) => {
-      await prisma.$disconnect();
-      if (path) {
-        let cleanPath = path.Modelo[0].archivo_modelo.replace(/src\\/g, "");
-        let dir =  __dirname
-        const file = dir.replace(/\\routes/g, "") + "\\" + cleanPath;
-        
-        res.download(file);
-      } else {
-        res.send("No hay archivo papu :v");
-      }
-    })
-    .catch(async (e) => {
-      await prisma.$disconnect();
-      res.send(e);
-    });
+router.get("/:ruta/:token", (req: Request, res: Response) => {
+  
 });
 
 router.get("/empleado/:correo/:token", (req, res) => {

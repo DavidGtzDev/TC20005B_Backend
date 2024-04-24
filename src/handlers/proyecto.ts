@@ -63,7 +63,14 @@
       if (!decoded) {
         throw new Error("Token invalido");
       }
-      return await prisma.proyecto.findMany();
+      console.log("AAAAA")
+      return await prisma.proyecto.findMany({
+        orderBy: [
+          {
+            id_proyecto: "desc"
+          }
+        ],
+      });
       
     }
 
@@ -107,10 +114,17 @@
       let id = parseInt(req.params.id);
 
       //Guardar archivo
-      await prisma.modelo.create({
+      const modelo = await prisma.modelo.create({
         data: {
           archivo_modelo: file || "",
-          nombre_modelo: name || "",
+          nombre_modelo: req.params.name || "",
+        },
+      });
+
+      await prisma.modeloProyecto.create({
+        data: {
+          id_modelo: modelo.id_modelo,
+          id_proyecto: id,
         },
       });
       
@@ -172,6 +186,9 @@
         where: {
           correo_creador: correo,
         },
+        orderBy: {
+          fecha_de_creacion: 'desc',
+        }
       });
       
     }

@@ -7,6 +7,7 @@ import proyectoRoutes from "./routes/proyectoRoutes";
 import loginRoute from "./routes/loginRoute";
 import modelosRoute from "./routes/modelosRoutes";
 import cors from "cors";
+import path from 'path';
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -22,6 +23,7 @@ app.use("/proyecto", proyectoRoutes);
 app.use("/login", loginRoute);
 app.use("/modelo", modelosRoute);
 
+app.use('/files', express.static(path.join(__dirname, 'uploads')))
 
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
