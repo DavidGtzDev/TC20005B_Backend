@@ -59,7 +59,7 @@
       //Obtener todos los proyectos
       let token = req.params.token;
       let decoded = jwt.verify(token, "secret")
-
+     
       if (!decoded) {
         throw new Error("Token invalido");
       }

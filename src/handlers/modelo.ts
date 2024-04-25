@@ -134,6 +134,7 @@ export module HandleModelo {
   export async function borrarModelo(req: Request) {
     let token = req.params.token;
     let decoded = jwt.verify(token, "secret")
+    
 
     if (!decoded) {
       throw new Error("Token invalido");
