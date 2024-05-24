@@ -1,16 +1,16 @@
 # Backend TC2005B
 
-Instala las ijueputa dependenicas 
+Install dependency
 ```
 npm install
 ```
 
-Corre la ijueputa migracion
+Run migrations
 ```
 npx prisma migrate dev --name init
 ```
 
-Corre el ijueputa server
+Run server
 ```
 npm start
 ```
